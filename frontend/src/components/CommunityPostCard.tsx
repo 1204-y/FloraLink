@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { Heart, MessageCircle } from 'lucide-react';
 import { CommunityPost } from '../types';
+import { cardMotion } from './motionPresets';
 
 interface CommunityPostCardProps {
   post: CommunityPost;
@@ -7,7 +9,7 @@ interface CommunityPostCardProps {
 
 const CommunityPostCard = ({ post }: CommunityPostCardProps) => {
   return (
-    <div className="card community-post">
+    <motion.div className="card community-post" {...cardMotion}>
       <div className="community-post__header">
         <img className="avatar-sm" src={post.avatar} alt={post.author} />
         <div>
@@ -28,7 +30,7 @@ const CommunityPostCard = ({ post }: CommunityPostCardProps) => {
         </span>
         <button className="action-button action-button--ghost">查看讨论</button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

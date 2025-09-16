@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { CalendarDays } from 'lucide-react';
 import { CareTask } from '../types';
+import { cardMotion } from './motionPresets';
 
 interface TaskListProps {
   tasks: CareTask[];
@@ -13,7 +15,7 @@ const priorityTone: Record<CareTask['priority'], string> = {
 
 const TaskList = ({ tasks }: TaskListProps) => {
   return (
-    <div className="card task-list">
+    <motion.div className="card task-list" {...cardMotion}>
       <div className="task-list__header">
         <h3>养护待办</h3>
         <span className="muted">已同步至日历</span>
@@ -35,7 +37,7 @@ const TaskList = ({ tasks }: TaskListProps) => {
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

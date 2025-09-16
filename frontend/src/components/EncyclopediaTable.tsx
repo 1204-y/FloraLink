@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
 import { EncyclopediaEntry } from '../types';
+import { cardMotion } from './motionPresets';
 
 interface EncyclopediaTableProps {
   entries: EncyclopediaEntry[];
@@ -7,7 +9,7 @@ interface EncyclopediaTableProps {
 
 const EncyclopediaTable = ({ entries }: EncyclopediaTableProps) => {
   return (
-    <div className="card encyclopedia">
+    <motion.div className="card encyclopedia" {...cardMotion}>
       <div className="encyclopedia__header">
         <div>
           <span className="eyebrow">根据你的环境生成的精选</span>
@@ -52,7 +54,7 @@ const EncyclopediaTable = ({ entries }: EncyclopediaTableProps) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

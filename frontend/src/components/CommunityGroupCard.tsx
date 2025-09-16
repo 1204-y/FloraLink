@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { Users } from 'lucide-react';
 import { CommunityGroup } from '../types';
+import { cardMotion } from './motionPresets';
 
 interface CommunityGroupCardProps {
   group: CommunityGroup;
@@ -7,7 +9,7 @@ interface CommunityGroupCardProps {
 
 const CommunityGroupCard = ({ group }: CommunityGroupCardProps) => {
   return (
-    <div className="card community-card">
+    <motion.div className="card community-card" {...cardMotion}>
       <div className="community-card__header">
         <div className="community-card__title">
           <Users size={20} strokeWidth={1.8} />
@@ -27,7 +29,7 @@ const CommunityGroupCard = ({ group }: CommunityGroupCardProps) => {
         </div>
       </div>
       <button className="action-button">加入圈子</button>
-    </div>
+    </motion.div>
   );
 };
 

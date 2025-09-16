@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { CalendarDays, MapPin, Navigation } from 'lucide-react';
 import { ObservationPoint } from '../types';
+import { cardMotion } from './motionPresets';
 
 interface ObservationCardProps {
   point: ObservationPoint;
@@ -7,7 +9,7 @@ interface ObservationCardProps {
 
 const ObservationCard = ({ point }: ObservationCardProps) => {
   return (
-    <div className="card observation-card">
+    <motion.div className="card observation-card" {...cardMotion}>
       <div className="observation-card__header">
         <div className="observation-card__title">
           <MapPin size={20} strokeWidth={1.8} />
@@ -29,7 +31,7 @@ const ObservationCard = ({ point }: ObservationCardProps) => {
       <button className="action-button action-button--ghost">
         <Navigation size={18} strokeWidth={1.8} /> 导航 · 保存到花期日历
       </button>
-    </div>
+    </motion.div>
   );
 };
 

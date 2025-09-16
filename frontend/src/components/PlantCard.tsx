@@ -1,6 +1,8 @@
+import { motion } from 'framer-motion';
 import { AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Plant } from '../types';
 import Timeline from './Timeline';
+import { cardMotion } from './motionPresets';
 
 interface PlantCardProps {
   plant: Plant;
@@ -16,7 +18,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
   const StatusIcon = status.icon;
 
   return (
-    <div className="card plant-card">
+    <motion.div className="card plant-card" {...cardMotion}>
       <div className="plant-card__banner">
         <div>
           <p className="eyebrow">{plant.environment}</p>
@@ -45,7 +47,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
         </div>
         <Timeline events={plant.timeline} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

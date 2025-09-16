@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { Send, Sparkles } from 'lucide-react';
 import { AssistantSuggestion } from '../types';
+import { cardMotion } from './motionPresets';
 
 interface AssistantPanelProps {
   suggestions: AssistantSuggestion[];
@@ -7,7 +9,7 @@ interface AssistantPanelProps {
 
 const AssistantPanel = ({ suggestions }: AssistantPanelProps) => {
   return (
-    <div className="card assistant-panel">
+    <motion.div className="card assistant-panel" {...cardMotion}>
       <div className="assistant-panel__header">
         <div>
           <span className="eyebrow">AI 为你解答 24 小时在线</span>
@@ -33,7 +35,7 @@ const AssistantPanel = ({ suggestions }: AssistantPanelProps) => {
       <button className="action-button">
         <Send size={18} strokeWidth={1.8} /> 向 AI 提问
       </button>
-    </div>
+    </motion.div>
   );
 };
 
