@@ -1,5 +1,6 @@
 import { PropsWithChildren, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   BookOpen,
   Flower2,
@@ -30,32 +31,47 @@ const Layout = ({ children }: PropsWithChildren) => {
         onClick={() => setMenuOpen(false)}
       />
       <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
-        <div className="brand">
-          <span className="brand-mark">🌿</span>
-          <div>
-            <span className="brand-name">FloraLink</span>
-            <p className="brand-subtitle">花友生活方式社区</p>
+        <div className="sidebar-header">
+          <div className="brand">
+            <span className="brand-mark" aria-hidden>🌿</span>
+            <div className="brand-text">
+              <span className="brand-name">FloraLink</span>
+              <p className="brand-subtitle">花友生活方式社区</p>
+            </div>
           </div>
+          <div className="brand-orbit" aria-hidden />
+          <p className="brand-caption">城市里的一隅绿意</p>
         </div>
         <nav className="sidebar-nav">
-          {navItems.map((item) => (
+          {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
+              key={to}
+              to={to}
+              className="nav-link"
               onClick={() => setMenuOpen(false)}
             >
-              <item.icon size={20} strokeWidth={1.8} />
-              <span>{item.label}</span>
+              {({ isActive }) => (
+                <motion.span
+                  className={`nav-item ${isActive ? 'active' : ''}`}
+                  initial={false}
+                  animate={isActive ? { scale: 1.02, x: 4 } : { scale: 1, x: 0 }}
+                  whileHover={{ scale: 1.04, x: 8 }}
+                  transition={{ type: 'spring', stiffness: 340, damping: 24 }}
+                >
+                  <span className="nav-item__indicator" aria-hidden />
+                  <span className="nav-item__icon">
+                    <Icon size={20} strokeWidth={1.6} />
+                  </span>
+                  <span className="nav-item__label">{label}</span>
+                </motion.span>
+              )}
             </NavLink>
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="sidebar-card">
-            <h4>今日灵感</h4>
-            <p>关注附近花友的花期动态，收集属于你的赏花地图。</p>
+          <div className="sidebar-daily">
+            <span className="sidebar-daily__eyebrow">每日花语</span>
+            <p className="sidebar-daily__quote">清露拂枝头，愿你今日也与花草同频。</p>
           </div>
         </div>
       </aside>
