@@ -37,6 +37,7 @@
    uvicorn floralink_backend.main:app --reload
    ```
    默认监听 `http://127.0.0.1:8000`，所有 API 以 `/api` 为前缀。
+   > 应用会在启动时自动检查 `observations` 表是否包含 `location_name` 与 `photo_url` 字段，若缺失会自动新增。部署后请重启服务以确保数据库结构更新。
 
 ### 运行测试
 ```bash
