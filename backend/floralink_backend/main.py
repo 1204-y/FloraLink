@@ -3,10 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
-from .database import Base, engine
+from .database import Base, engine, ensure_observation_columns
 from .routers import assistant, auth, communities, frontend, gardens, observations, plants, users
 
 Base.metadata.create_all(bind=engine)
+ensure_observation_columns()
 
 app = FastAPI(title=settings.app_name)
 
