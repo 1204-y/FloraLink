@@ -1,5 +1,5 @@
 """Security utilities for authentication and password management."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 from jose import jwt
@@ -27,6 +27,8 @@ def create_access_token(data: dict[str, Any], expires_delta: Optional[timedelta]
     """Generate a signed JSON Web Token containing the provided data."""
 
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))
+    expire = datetime.now(timezone.utc) + (
+        expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
+    )
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, settings.secret_key, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, settings.secret_key.get_secret_value(), algorithm=ALGORITHM)

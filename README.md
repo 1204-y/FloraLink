@@ -23,7 +23,13 @@
    source .venv/bin/activate
    ```
 
-2. **安装依赖**
+2. **配置环境变量**
+   - 生成一串随机字符串并设置 `FLORALINK_SECRET_KEY`（用于签发 JWT）：
+     ```bash
+     export FLORALINK_SECRET_KEY="change-me"  # Windows PowerShell: setx FLORALINK_SECRET_KEY "change-me"
+     ```
+
+3. **安装依赖**
    ```bash
    pip install -e .
    ```
@@ -32,7 +38,7 @@
    pip install -e .[test]
    ```
 
-3. **启动服务**
+4. **启动服务**
    ```bash
    uvicorn floralink_backend.main:app --reload
    ```

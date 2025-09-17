@@ -1,5 +1,5 @@
 """Integration tests for frontend-oriented composite endpoints."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from .utils import auth_headers, login_user, register_user
 
@@ -44,7 +44,10 @@ def _bootstrap_garden(client):
     # Manually backdate last completed to simulate即将到期
     update = client.post(
         f"/api/gardens/{garden['id']}/plants/{plant['id']}/care-tasks/{task['id']}/events",
-        json={"note": "补记", "performed_at": (datetime.utcnow() - timedelta(days=4)).isoformat()},
+        json={
+            "note": "补记",
+            "performed_at": (datetime.now(timezone.utc) - timedelta(days=4)).isoformat(),
+        },
         headers=auth_headers(token),
     )
     assert update.status_code == 201

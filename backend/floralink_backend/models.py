@@ -1,5 +1,5 @@
 """SQLAlchemy ORM models for the FloraLink backend."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     Boolean,
@@ -18,6 +18,12 @@ from sqlalchemy.orm import relationship
 from .database import Base
 
 
+def _utcnow() -> datetime:
+    """Return an aware datetime in UTC."""
+
+    return datetime.now(timezone.utc)
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -27,7 +33,7 @@ class User(Base):
     full_name = Column(String(255), nullable=True)
     city = Column(String(255), nullable=True)
     bio = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
 
     gardens = relationship("Garden", back_populates="owner", cascade="all, delete-orphan")
     posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
@@ -89,7 +95,7 @@ class GrowthEntry(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     garden_plant_id = Column(Integer, ForeignKey("garden_plants.id", ondelete="CASCADE"), nullable=False)
-    recorded_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    recorded_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
     photo_url = Column(String(500), nullable=True)
     notes = Column(Text, nullable=True)
     height_cm = Column(Float, nullable=True)
@@ -105,7 +111,7 @@ class CareTask(Base):
     task_type = Column(String(255), nullable=False)
     frequency_days = Column(Integer, nullable=True)
     notes = Column(Text, nullable=True)
-    last_completed = Column(DateTime, nullable=True)
+    last_completed = Column(DateTime(timezone=True), nullable=True)
 
     plant = relationship("GardenPlant", back_populates="care_tasks")
     events = relationship("CareEvent", back_populates="task", cascade="all, delete-orphan")
@@ -116,7 +122,7 @@ class CareEvent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     care_task_id = Column(Integer, ForeignKey("care_tasks.id", ondelete="CASCADE"), nullable=False)
-    performed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    performed_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
     note = Column(Text, nullable=True)
 
     task = relationship("CareTask", back_populates="events")
@@ -130,7 +136,7 @@ class Observation(Base):
     species_id = Column(Integer, ForeignKey("plant_species.id", ondelete="SET NULL"), nullable=True)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    observed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    observed_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
     note = Column(Text, nullable=True)
     is_public = Column(Boolean, default=True, nullable=False)
     location_name = Column(String(255), nullable=True)
@@ -147,7 +153,7 @@ class AssistantMessage(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     question = Column(Text, nullable=False)
     answer = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
 
     user = relationship("User", back_populates="assistant_messages")
 
@@ -173,7 +179,7 @@ class GroupMembership(Base):
     id = Column(Integer, primary_key=True, index=True)
     group_id = Column(Integer, ForeignKey("community_groups.id", ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    joined_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    joined_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
 
     group = relationship("CommunityGroup", back_populates="memberships")
     user = relationship("User", back_populates="memberships")
@@ -187,7 +193,7 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     title = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
 
     group = relationship("CommunityGroup", back_populates="posts")
     author = relationship("User", back_populates="posts")

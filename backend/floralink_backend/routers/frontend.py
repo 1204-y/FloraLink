@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 """Aggregated data endpoints powering the interactive frontend."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends
@@ -27,7 +27,7 @@ def _task_due_at(task: CareTask) -> Optional[datetime]:
     if task.frequency_days is None:
         return None
     if task.last_completed is None:
-        return datetime.utcnow()
+        return datetime.now(timezone.utc)
     return task.last_completed + timedelta(days=task.frequency_days)
 
 
@@ -61,7 +61,7 @@ def garden_dashboard(
         .all()
     )
 
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     task_summaries: List[CareTaskSummary] = []
     due_tasks = 0
     upcoming_tasks = 0

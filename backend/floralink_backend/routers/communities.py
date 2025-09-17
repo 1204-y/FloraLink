@@ -2,6 +2,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -22,12 +23,18 @@ def create_group(
 
     group = CommunityGroup(**group_in.dict())
     db.add(group)
-    db.commit()
-    db.refresh(group)
     # Automatically join creator
-    membership = GroupMembership(group_id=group.id, user_id=current_user.id)
+    membership = GroupMembership(group=group, user_id=current_user.id)
     db.add(membership)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="A group with this name already exists in the selected city.",
+        )
+    db.refresh(group)
     return group
 
 
