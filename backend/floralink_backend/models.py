@@ -116,9 +116,11 @@ class Observation(Base):
     species_id = Column(Integer, ForeignKey("plant_species.id", ondelete="SET NULL"), nullable=True)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
+    location_name = Column(String(255), nullable=True)
     observed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     note = Column(Text, nullable=True)
     is_public = Column(Boolean, default=True, nullable=False)
+    photo_url = Column(String(500), nullable=True)
 
     reporter = relationship("User", back_populates="observations")
     species = relationship("PlantSpecies", back_populates="observations")

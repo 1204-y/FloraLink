@@ -152,9 +152,11 @@ class ObservationBase(BaseModel):
     species_id: Optional[int] = None
     latitude: float
     longitude: float
+    location_name: Optional[str] = None
     note: Optional[str] = None
     is_public: bool = True
     observed_at: Optional[datetime] = None
+    photo_url: Optional[str] = None
 
 
 class ObservationCreate(ObservationBase):
