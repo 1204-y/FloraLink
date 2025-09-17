@@ -1,12 +1,14 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.sqlite3
-.env
-.venv/
-node_modules/
-frontend/node_modules/
-frontend/dist/
+# Flutter & Dart
+.dart_tool/
+.packages
+.pub-cache/
+build/
+android/.gradle/
+android/app/build/
+ios/Flutter/
+ios/Pods/
+ios/Runner.xcworkspace/
+flutter_export_environment.sh
 .DS_Store
-npm-debug.log*
+.idea/
+*.iml
