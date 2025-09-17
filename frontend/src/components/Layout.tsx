@@ -1,9 +1,12 @@
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   BookOpen,
+  ChevronLeft,
+  ChevronRight,
   Flower2,
+  LogOut,
   MapPin,
   Menu,
   Sparkles,
@@ -11,6 +14,7 @@ import {
   Users,
   X
 } from 'lucide-react';
+import { useAuth } from '../providers/AuthProvider';
 
 const navItems = [
   { to: '/dashboard', label: '总览', icon: Flower2 },
@@ -23,14 +27,30 @@ const navItems = [
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const { user, loading, logout, bootstrap } = useAuth();
+
+  const initials = useMemo(() => {
+    if (!user?.full_name) {
+      return user?.email?.slice(0, 2)?.toUpperCase() ?? 'FL';
+    }
+    return user.full_name
+      .split('')
+      .filter((char) => /[A-Za-z\u4e00-\u9fa5]/.test(char))
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+  }, [user]);
+
+  const displayName = user?.full_name ?? user?.email ?? '花友';
 
   return (
-    <div className="layout">
+    <div className={`layout ${collapsed ? 'layout--collapsed' : ''}`}>
       <div
         className={`sidebar-overlay ${menuOpen ? 'show' : ''}`}
         onClick={() => setMenuOpen(false)}
       />
-      <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
+      <aside className={`sidebar ${menuOpen ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <div className="brand">
             <span className="brand-mark" aria-hidden>🌿</span>
@@ -42,6 +62,14 @@ const Layout = ({ children }: PropsWithChildren) => {
           <div className="brand-orbit" aria-hidden />
           <p className="brand-caption">城市里的一隅绿意</p>
         </div>
+        <button
+          className="sidebar-collapse"
+          type="button"
+          onClick={() => setCollapsed((value) => !value)}
+          aria-label={collapsed ? '展开侧边栏' : '收起侧边栏'}
+        >
+          {collapsed ? <ChevronRight size={18} strokeWidth={1.6} /> : <ChevronLeft size={18} strokeWidth={1.6} />}
+        </button>
         <nav className="sidebar-nav">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
@@ -85,16 +113,27 @@ const Layout = ({ children }: PropsWithChildren) => {
             {menuOpen ? <X size={22} strokeWidth={1.8} /> : <Menu size={22} strokeWidth={1.8} />}
           </button>
           <div className="topbar-info">
-            <span className="eyebrow">欢迎回来，小羊</span>
+            <span className="eyebrow">{loading ? '加载中…' : `欢迎回来，${displayName}`}</span>
             <h1>你的花园今天也很精彩</h1>
-            <p>已为你准备新的养护提醒与圈子活动，别忘了向 AI 提问。</p>
+            <p>养护提醒、花期观测和智能助手都已同步最新内容。</p>
           </div>
           <div className="topbar-user">
-            <div className="avatar">XY</div>
-            <div>
-              <p className="user-name">小羊</p>
-              <p className="user-meta">今日累计养护 2 项</p>
+            <div className="avatar">{initials}</div>
+            <div className="topbar-user__meta">
+              <p className="user-name">{displayName}</p>
+              <p className="user-meta">{user?.city ?? '正在更新你的花友档案'}</p>
             </div>
+            <button
+              className="ghost-button"
+              type="button"
+              onClick={() => {
+                logout();
+                void bootstrap();
+              }}
+            >
+              <LogOut size={18} strokeWidth={1.6} />
+              重新连接
+            </button>
           </div>
         </header>
         <main className="content">{children}</main>

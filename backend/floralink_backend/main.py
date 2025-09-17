@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
 from .database import Base, engine
-from .routers import auth, communities, gardens, observations, plants, users
+from .routers import assistant, auth, communities, frontend, gardens, observations, plants, users
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,6 +24,8 @@ app.include_router(plants.router, prefix=settings.api_v1_prefix)
 app.include_router(gardens.router, prefix=settings.api_v1_prefix)
 app.include_router(observations.router, prefix=settings.api_v1_prefix)
 app.include_router(communities.router, prefix=settings.api_v1_prefix)
+app.include_router(assistant.router, prefix=settings.api_v1_prefix)
+app.include_router(frontend.router, prefix=settings.api_v1_prefix)
 
 
 @app.get("/")

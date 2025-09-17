@@ -1,7 +1,18 @@
 """SQLAlchemy ORM models for the FloraLink backend."""
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -22,6 +33,9 @@ class User(Base):
     posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
     memberships = relationship("GroupMembership", back_populates="user", cascade="all, delete-orphan")
     observations = relationship("Observation", back_populates="reporter", cascade="all, delete-orphan")
+    assistant_messages = relationship(
+        "AssistantMessage", back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class PlantSpecies(Base):
@@ -119,9 +133,23 @@ class Observation(Base):
     observed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     note = Column(Text, nullable=True)
     is_public = Column(Boolean, default=True, nullable=False)
+    location_name = Column(String(255), nullable=True)
+    photo_url = Column(String(500), nullable=True)
 
     reporter = relationship("User", back_populates="observations")
     species = relationship("PlantSpecies", back_populates="observations")
+
+
+class AssistantMessage(Base):
+    __tablename__ = "assistant_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    question = Column(Text, nullable=False)
+    answer = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="assistant_messages")
 
 
 class CommunityGroup(Base):

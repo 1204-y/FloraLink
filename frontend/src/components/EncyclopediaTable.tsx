@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
-import { EncyclopediaEntry } from '../types';
+import { PlantSpecies } from '../types';
 import { cardMotion } from './motionPresets';
 
 interface EncyclopediaTableProps {
-  entries: EncyclopediaEntry[];
+  entries: PlantSpecies[];
 }
 
 const EncyclopediaTable = ({ entries }: EncyclopediaTableProps) => {
@@ -22,33 +22,37 @@ const EncyclopediaTable = ({ entries }: EncyclopediaTableProps) => {
           <thead>
             <tr>
               <th>植物</th>
-              <th>适宜气候</th>
-              <th>养护难度</th>
+              <th>阳光</th>
+              <th>浇水建议</th>
               <th>亮点</th>
-              <th>最佳季节</th>
+              <th>花期/季节</th>
             </tr>
           </thead>
           <tbody>
             {entries.map((entry) => (
               <tr key={entry.id}>
                 <td>
-                  <strong>{entry.name}</strong>
-                  <p className="muted">{entry.latinName}</p>
+                  <strong>{entry.common_name}</strong>
+                  <p className="muted">{entry.scientific_name}</p>
                 </td>
-                <td>{entry.climate}</td>
-                <td>
-                  <span className="encyclopedia__difficulty">{entry.difficulty}</span>
-                </td>
+                <td>{entry.sunlight ?? '按需调整'}</td>
+                <td>{entry.watering ?? '保持土壤微湿'}</td>
                 <td>
                   <div className="chip-row">
-                    {entry.highlights.map((item) => (
-                      <span key={item} className="chip">
-                        {item}
-                      </span>
-                    ))}
+                    {[
+                      entry.description?.slice(0, 16),
+                      entry.sunlight,
+                      entry.watering
+                    ]
+                      .filter(Boolean)
+                      .map((item) => (
+                        <span key={item} className="chip">
+                          {item}
+                        </span>
+                      ))}
                   </div>
                 </td>
-                <td>{entry.bestSeason}</td>
+                <td>{entry.bloom_season ?? '全年常绿'}</td>
               </tr>
             ))}
           </tbody>

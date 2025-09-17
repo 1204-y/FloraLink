@@ -1,9 +1,11 @@
 """Router package exports."""
-from . import auth, communities, gardens, observations, plants, users
+from . import assistant, auth, communities, frontend, gardens, observations, plants, users
 
 __all__ = [
+    "assistant",
     "auth",
     "communities",
+    "frontend",
     "gardens",
     "observations",
     "plants",

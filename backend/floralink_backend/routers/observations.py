@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from ..database import get_db
 from ..deps import get_current_user
@@ -36,7 +36,15 @@ def list_observations(
 ) -> List[Observation]:
     """Return recent observations with optional filtering."""
 
-    query = db.query(Observation).order_by(Observation.observed_at.desc())
+    query = (
+        db.query(Observation)
+        .options(selectinload(Observation.species))
+        .order_by(Observation.observed_at.desc())
+    )
     if species_id is not None:
         query = query.filter(Observation.species_id == species_id)
-    return query.offset(skip).limit(limit).all()
+    observations = query.offset(skip).limit(limit).all()
+    for observation in observations:
+        if observation.species:
+            observation.species_common_name = observation.species.common_name
+    return observations

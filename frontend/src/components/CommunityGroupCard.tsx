@@ -5,30 +5,43 @@ import { cardMotion } from './motionPresets';
 
 interface CommunityGroupCardProps {
   group: CommunityGroup;
+  selected?: boolean;
+  onSelect?: (group: CommunityGroup) => void;
+  onJoin?: (group: CommunityGroup) => void;
 }
 
-const CommunityGroupCard = ({ group }: CommunityGroupCardProps) => {
+const CommunityGroupCard = ({ group, selected = false, onSelect, onJoin }: CommunityGroupCardProps) => {
   return (
-    <motion.div className="card community-card" {...cardMotion}>
+    <motion.div
+      className={`card community-card ${selected ? 'community-card--active' : ''}`}
+      {...cardMotion}
+      onClick={() => onSelect?.(group)}
+      role="button"
+      tabIndex={0}
+      onKeyUp={(event) => {
+        if (event.key === 'Enter') {
+          onSelect?.(group);
+        }
+      }}
+    >
       <div className="community-card__header">
         <div className="community-card__title">
           <Users size={20} strokeWidth={1.8} />
           <h3>{group.name}</h3>
         </div>
-        <span className="tag">{group.members} 花友</span>
+        {group.city && <span className="tag">{group.city}</span>}
       </div>
-      <p className="muted">{group.description}</p>
-      <div className="community-card__topics">
-        <p className="muted">热门话题</p>
-        <div className="chip-row">
-          {group.trendingTopics.map((topic) => (
-            <span key={topic} className="chip">
-              #{topic}
-            </span>
-          ))}
-        </div>
-      </div>
-      <button className="action-button">加入圈子</button>
+      <p className="muted">{group.description ?? '分享你的园艺灵感，与同城花友互换经验。'}</p>
+      <button
+        className="action-button"
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onJoin?.(group);
+        }}
+      >
+        加入圈子
+      </button>
     </motion.div>
   );
 };
